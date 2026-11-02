@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Pizza Hub - Online Order</title>
+    <style>
+        :root {
+            --primary: #ff4757;
+            --secondary: #ffa502;
+            --dark: #2f3542;
+            --light: #f1f2f6;
+            --accent: #2ed573;
+            --trial: #3742fa;
+            --water: #00abff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            padding-bottom: 90px;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        header h1 {
+            font-size: 2.3rem;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            color: #ffeaa7;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin: 25px 0 15px;
+            color: var(--dark);
+            border-left: 5px solid var(--primary);
+            padding-left: 12px;
+            font-weight: bold;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 8px 0 12px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .price {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .price-trial {
+            font-weight: bold;
+            color: var(--trial);
+            font-size: 1.2rem;
+        }
+
+        .price-water {
+            font-weight: bold;
+            color: var(--water);
+            font-size: 1.2rem;
+        }
+
+        .btn-add {
+            background: var(--secondary);
+            color: var(--dark);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .btn-add:hover {
+            background: #e09f02;
+        }
+
+        .btn-add-trial {
+            background: var(--trial);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .btn-add-trial:hover {
+            background: #2e34d2;
+        }
+
+        .btn-add-water {
+            background: var(--water);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .btn-add-water:hover {
+            background: #0088cc;
+        }
+
+        .qty-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #dfe4ea;
+            border-radius: 6px;
+            padding: 4px 8px;
+        }
+
+        .qty-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .item-qty {
+            font-weight: bold;
+            font-size: 1rem;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        /* कार्ट बार */
+        .cart-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--dark);
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.25);
+            z-index: 100;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+        }
+
+        .btn-checkout {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 4px 10px rgba(46, 213, 115, 0.3);
+        }
+
+        .btn-checkout:hover {
+            background: #26af5f;
+        }
+
+        /* एड्रेस फॉर्म पॉप-अप (Modal) स्टाइलिंग */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 200;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--dark);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .btn-submit-order {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>The Pizza Hub 🍕</h1>
+        <p>ताज़ा पिज़्ज़ा, कॉफ़ी, पानी और स्वादिष्ट स्नैक्स, सीधा आपके घर तक!</p>
+    </header>
+
+    <div class="container">
+        <!-- 1. सबसे ऊपर कॉफ़ी, पानी और फ्री ट्रायल सेक्शन -->
+        <h2 class="section-title" style="border-left-color: var(--water);">☕ बेवरेज एवं ड्रिंक्स (Coffee & Water)</h2>
+        <div class="menu-grid">
+            <div class="card" style="border: 2px dashed var(--trial);">
+                <div>
+                    <h3 style="color: var(--trial);">Trial Coffee (फ्री ट्रायल कॉफ़ी) ☕</h3>
+                    <p>मुफ्त ट्रायल के लिए कॉफ़ी टेस्ट करें!</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price-trial">₹0 (Free)</span>
+                    <div id="cart-ctrl-Trial Coffee">
+                        <button class="btn-add-trial" onclick="addToCart('Trial Coffee', 0)">Add +</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="border: 2px dashed var(--trial);">
+                <div>
+                    <h3 style="color: var(--trial);">Free Trial Water (फ्री ट्रायल पानी) 💧</h3>
+                    <p>मुफ्त ट्रायल के लिए पानी का सैंपल!</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price-trial">₹0 (Free)</span>
+                    <div id="cart-ctrl-Free Trial Water">
+                        <button class="btn-add-trial" onclick="addToCart('Free Trial Water', 0)">Add +</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <h3>Hot Coffee (हॉट कॉफ़ी) ☕</h3>
+                    <p>गरमागरम और कड़क फ्रेश कॉफ़ी</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price">₹40</span>
+                    <div id="cart-ctrl-Hot Coffee">
+                        <button class="btn-add" onclick="addToCart('Hot Coffee', 40)">Add +</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <h3>Cold Coffee (कोल्ड कॉफ़ी) 🧋</h3>
+                    <p>ठंडी-ठंडी क्रीमी और टेस्टी कोल्ड कॉफ़ी</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price">₹70</span>
+                    <div id="cart-ctrl-Cold Coffee">
+                        <button class="btn-add" onclick="addToCart('Cold Coffee', 70)">Add +</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <h3>Water Bottle (पानी की बोतल) 🚰</h3>
+                    <p>ताज़ा मिनरल वाटर बॉटल (1 लीटर)</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price-water">₹20</span>
+                    <div id="cart-ctrl-Water Bottle">
+                        <button class="btn-add-water" onclick="addToCart('Water Bottle', 20)">Add +</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. पॉपुलर पिज़्ज़ा सेक्शन -->
+        <h2 class="section-title">पॉपुलर पिज़्ज़ा</h2>
+        <div class="menu-grid">
+            <div class="card">
+                <div>
+                    <h3>Margherita Pizza</h3>
+                    <p>क्लासिक चीज़, स्पेशल टोमैटो सॉस और हर्ब्स</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price">₹129</span>
+                    <div id="cart-ctrl-Margherita Pizza">
+                        <button class="btn-add" onclick="addToCart('Margherita Pizza', 129)">Add +</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <h3>Farmhouse Delight</h3>
+                    <p>शिमला मिर्च, प्याज, टमाटर और ताज़ा स्वीट कॉर्न</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price">₹179</span>
+                    <div id="cart-ctrl-Farmhouse Delight">
+                        <button class="btn-add" onclick="addToCart('Farmhouse Delight', 179)">Add +</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <h3>Paneer Tikka Special</h3>
+                    <p>मसालेदार पनीर टिक्का, शिमला मिर्च और रेड पैपर</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price">₹219</span>
+                    <div id="cart-ctrl-Paneer Tikka Special">
+                        <button class="btn-add" onclick="addToCart('Paneer Tikka Special', 219)">Add +</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <h3>Peri Peri Veggie Pizza</h3>
+                    <p>पैरी-पैरी मसाले, jalapenos और स्पाइसी वेजिस</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price">₹239</span>
+                    <div id="cart-ctrl-Peri Peri Veggie Pizza">
+                        <button class="btn-add" onclick="addToCart('Peri Peri Veggie Pizza', 239)">Add +</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. स्नैक्स एवं नूडल्स सेक्शन -->
+        <h2 class="section-title">स्नैक्स एवं नूडल्स</h2>
+        <div class="menu-grid">
+            <div class="card">
+                <div>
+                    <h3>Cheese Garlic Bread (₹2 / ₹99)</h3>
+                    <p>गार्लिक बटर और लोडेड मोज़रेला चीज़</p>
+                </div>
+                <div style="margin-top: 8px;">
+                    <label style="font-size: 0.85rem; font-weight: bold; color: #555;">अमाउंट चुनें:</label>
+                    <select id="garlicBreadPrice" style="width: 100%; padding: 6px; margin-top: 4px; border-radius: 5px; border: 1px solid #ccc; font-weight: bold; color: var(--primary);">
+                        <option value="2">₹2 (स्पेशल ऑफर)</option>
+                        <option value="99">₹99 (स्टैंडर्ड प्राइस)</option>
+                    </select>
+                </div>
+                <div class="card-footer" style="margin-top: 12px;">
+                    <span class="price">फ्लैक्सिबल</span>
+                    <button class="btn-add" onclick="addGarlicBread()">Add +</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <h3>Schezwan Fusion Noodles</h3>
+                    <p>स्पाइसी शेजवान सॉस और मिक्स वेजीज</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price" style="color: var(--secondary);">उपलब्ध</span>
+                    <div id="cart-ctrl-Schezwan Fusion Noodles">
+                        <button class="btn-add" onclick="addToCart('Schezwan Fusion Noodles', 0)">Add +</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- कार्ट बार -->
+    <div class="cart-bar">
+        <div>
+            <span id="cart-count">0 आइटम्स</span> | <b>कुल: ₹<span id="cart-total">0</span></b>
+        </div>
+        <button class="btn-checkout" onclick="openAddressModal()">WhatsApp पर ऑर्डर करें 📲</button>
+    </div>
+
+    <!-- एड्रेस लेने के लिए पॉप-अप फॉर्म -->
+    <div id="addressModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeAddressModal()">&times;</span>
+            <h3 style="color: var(--dark); margin-bottom: 15px; text-align: center;">डिलिवरी की जानकारी भरें</h3>
+            
+            <div class="form-group">
+                <label>आपका नाम:</label>
+                <input type="text" id="custName" placeholder="अपना नाम लिखें">
+            </div>
+
+            <div class="form-group">
+                <label>मोबाइल नंबर:</label>
+                <input type="tel" id="custPhone" placeholder="10 अंकों का मोबाइल नंबर">
+            </div>
+
+            <div class="form-group">
+                <label>पूरा पता (Address & Landmark):</label>
+                <textarea id="custAddress" rows="3" placeholder="कमरा नंबर, बिल्डिंग का नाम, एरिया..."></textarea>
+            </div>
+
+            <button class="btn-submit-order" onclick="submitOrder()">ऑर्डर भेजें 🚀</button>
+        </div>
+    </div>
+
+    <script>
+        let cart = [];
+
+        function addToCart(name, price) {
+            const itemIndex = cart.findIndex(item => item.name === name);
+            if (itemIndex > -1) {
+                cart[itemIndex].qty += 1;
+            } else {
+                cart.push({ name: name, price: price, qty: 1 });
+            }
+            updateCart();
+        }
+
+        function addGarlicBread() {
+            let selectedPrice = parseInt(document.getElementById('garlicBreadPrice').value);
+            let itemName = `Cheese Garlic Bread (₹${selectedPrice})`;
+            
+            const itemIndex = cart.findIndex(item => item.name === itemName);
+            if (itemIndex > -1) {
+                cart[itemIndex].qty += 1;
+            } else {
+                cart.push({ name: itemName, price: selectedPrice, qty: 1 });
+            }
+            updateCart();
+        }
+
+        function changeQty(name, change) {
+            const itemIndex = cart.findIndex(item => item.name === name);
+            if (itemIndex > -1) {
+                cart[itemIndex].qty += change;
+                if (cart[itemIndex].qty <= 0) {
+                    cart.splice(itemIndex, 1);
+                }
+            }
+            updateCart();
+        }
+
+        function updateCart() {
+            let totalItems = 0;
+            let totalPrice = 0;
+
+            const menuNames = [
+                'Trial Coffee',
+                'Free Trial Water',
+                'Hot Coffee',
+                'Cold Coffee',
+                'Water Bottle',
+                'Margherita Pizza', 
+                'Farmhouse Delight', 
+                'Paneer Tikka Special', 
+                'Peri Peri Veggie Pizza', 
+                'Schezwan Fusion Noodles'
+            ];
+
+            menuNames.forEach(name => {
+                let ctrlDiv = document.getElementById(`cart-ctrl-${name}`);
+                if (ctrlDiv) {
+                    if (name === 'Trial Coffee' || name === 'Free Trial Water') {
+                        ctrlDiv.innerHTML = `<button class="btn-add-trial" onclick="addToCart('${name}', 0)">Add +</button>`;
+                    } else if (name === 'Water Bottle') {
+                        ctrlDiv.innerHTML = `<button class="btn-add-water" onclick="addToCart('${name}', 20)">Add +</button>`;
+                    } else if (name === 'Schezwan Fusion Noodles') {
+                        ctrlDiv.innerHTML = `<button class="btn-add" onclick="addToCart('${name}', 0)">Add +</button>`;
+                    } else {
+                        ctrlDiv.innerHTML = `<button class="btn-add" onclick="addToCart('${name}', ${getItemPrice(name)})">Add +</button>`;
+                    }
+                }
+            });
+
+            cart.forEach(item => {
+                totalItems += item.qty;
+                totalPrice += item.price * item.qty;
+
+                if (menuNames.includes(item.name)) {
+                    let ctrlDiv = document.getElementById(`cart-ctrl-${item.name}`);
+                    if (ctrlDiv) {
+                        ctrlDiv.innerHTML = `
+                            <div class="qty-control">
+                                <button class="qty-btn" onclick="changeQty('${item.name}', -1)">-</button>
+                                <span class="item-qty">${item.qty}</span>
+                                <button class="qty-btn" onclick="changeQty('${item.name}', 1)">+</button>
+                            </div>
+                        `;
+                    }
+                }
+            });
+
+            document.getElementById('cart-count').innerText = `${totalItems} आइटम्स`;
+            document.getElementById('cart-total').innerText = totalPrice;
+        }
+
+        function getItemPrice(name) {
+            const prices = {
+                'Trial Coffee': 0,
+                'Free Trial Water': 0,
+                'Hot Coffee': 40,
+                'Cold Coffee': 70,
+                'Water Bottle': 20,
+                'Margherita Pizza': 129,
+                'Farmhouse Delight': 179,
+                'Paneer Tikka Special': 219,
+                'Peri Peri Veggie Pizza': 239,
+                'Schezwan Fusion Noodles': 0
+            };
+            return prices[name] || 0;
+        }
+
+        function openAddressModal() {
+            if (cart.length === 0) {
+                alert('कृपया ऑर्डर करने से पहले कम से कम एक आइटम चुनें!');
+                return;
+            }
+            document.getElementById('addressModal').style.display = "flex";
+        }
+
+        function closeAddressModal() {
+            document.getElementById('addressModal').style.display = "none";
+        }
+
+        function submitOrder() {
+            let name = document.getElementById('custName').value.trim();
+            let phone = document.getElementById('custPhone').value.trim();
+            let address = document.getElementById('custAddress').value.trim();
+
+            if (!name || !phone || !address) {
+                alert('कृपया अपना नाम, मोबाइल नंबर और पूरा पता भरें!');
+                return;
+            }
+
+            let hasOnlyTrial = cart.every(item => item.price === 0);
+
+            let message = `नमस्ते The Pizza Hub! मुझे यह ऑर्डर देना है:\n\n`;
+            message += `👤 ग्राहक का नाम: ${name}\n`;
+            message += `📞 मोबाइल नंबर: ${phone}\n`;
+            message += `📍 डिलीवरी पता: ${address}\n\n`;
+            message += `📦 *ऑर्डर आइटम्स:*\n`;
+            
+            let total = 0;
+            cart.forEach((item, index) => {
+                let itemTotal = item.price * item.qty;
+                total += itemTotal;
+                message += `${index + 1}. ${item.name} x ${item.qty} = ₹${itemTotal}\n`;
+            });
+
+            message += `\n*कुल राशि: ₹${total}*`;
+
+            let storePhone = "9152555586"; 
+            let upiID = "guptakamlesh44@bpunity"; 
+            let storeName = "The Pizza Hub";
+
+            if (hasOnlyTrial || total === 0) {
+                message += `\n\nयह एक फ्री ट्रायल आर्डर है। कृपया डिलीवर करें।`;
+                let encodedMessage = encodeURIComponent(message);
+                window.open(`https://wa.me/${storePhone}?text=${encodedMessage}`, '_blank');
+            } else {
+                message += `\n\nपेमेंट होने के बाद यह ऑर्डर डिलीवर करना है।`;
+                let paymentUrl = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(storeName)}&am=${total}&cu=INR`;
+                window.location.href = paymentUrl;
+
+                setTimeout(function() {
+                    let encodedMessage = encodeURIComponent(message);
+                    window.open(`https://wa.me/${storePhone}?text=${encodedMessage}`, '_blank');
+                }, 3000);
+            }
+
+            closeAddressModal();
+        }
+    </script>
+</body>
+</html>
