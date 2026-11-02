@@ -24,7 +24,7 @@
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             color: #333;
-            padding-bottom: 90px;
+            padding-bottom: 110px;
             min-height: 100vh;
         }
 
@@ -157,6 +157,7 @@
             text-align: center;
         }
 
+        /* फिक्सड बॉटम कार्ट बार */
         .cart-bar {
             position: fixed;
             bottom: 0;
@@ -164,20 +165,23 @@
             right: 0;
             background: var(--dark);
             color: white;
-            padding: 12px 20px;
+            padding: 12px 15px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.25);
+            gap: 10px;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
             z-index: 100;
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
         }
 
         .cart-bar-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            padding-bottom: 6px;
         }
 
         .cart-actions {
@@ -189,26 +193,28 @@
             background: var(--accent);
             color: white;
             border: none;
-            padding: 8px 14px;
+            padding: 10px 12px;
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 0.95rem;
-            box-shadow: 0 4px 10px rgba(46, 213, 115, 0.3);
+            font-size: 0.9rem;
             flex: 1;
+            box-shadow: 0 3px 8px rgba(46, 213, 115, 0.4);
+            text-align: center;
         }
 
         .btn-trial {
             background: var(--trial);
             color: white;
             border: none;
-            padding: 8px 14px;
+            padding: 10px 12px;
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 0.95rem;
-            box-shadow: 0 4px 10px rgba(55, 66, 250, 0.3);
+            font-size: 0.9rem;
             flex: 1;
+            box-shadow: 0 3px 8px rgba(55, 66, 250, 0.4);
+            text-align: center;
         }
 
         /* एड्रेस फॉर्म पॉप-अप (Modal) स्टाइलिंग */
@@ -378,13 +384,14 @@
         </div>
     </div>
 
-    <!-- कार्ट बार -->
+    <!-- कार्ट बार जिसमें दोनों बटन साफ़ दिखेंगे -->
     <div class="cart-bar">
         <div class="cart-bar-top">
-            <span id="cart-count">0 आइटम्स</span> | <b>कुल: ₹<span id="cart-total">0</span></b>
+            <span id="cart-count">0 आइटम्स</span> 
+            <b>कुल: ₹<span id="cart-total">0</span></b>
         </div>
         <div class="cart-actions">
-            <button class="btn-checkout" onclick="openAddressModal('paid')">WhatsApp ऑर्डर (पेमेंट) 📲</button>
+            <button class="btn-checkout" onclick="openAddressModal('paid')">WhatsApp (पेमेंट) 📲</button>
             <button class="btn-trial" onclick="openAddressModal('trial')">फ्री ट्रायल (₹0) 🎁</button>
         </div>
     </div>
@@ -416,7 +423,7 @@
 
     <script>
         let cart = [];
-        let orderType = 'paid'; // 'paid' या 'trial'
+        let orderType = 'paid';
 
         function addToCart(name, price) {
             const itemIndex = cart.findIndex(item => item.name === name);
@@ -584,7 +591,6 @@
                     window.open(`https://wa.me/${storePhone}?text=${encodedMessage}`, '_blank');
                 }, 3000);
             } else {
-                // फ्री ट्रायल के लिए सीधे WhatsApp खुलेगा बिना पेमेंट के
                 let encodedMessage = encodeURIComponent(message);
                 window.open(`https://wa.me/${storePhone}?text=${encodedMessage}`, '_blank');
             }
