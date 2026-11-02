@@ -253,9 +253,18 @@
             message += `\n*कुल राशि: ₹${total}*`;
             message += `\n\nकृपया डिलीवरी का समय और भुगतान माध्यम की पुष्टि करें।`;
 
-            const phoneNumber = "919152555586";
-            const encodedMessage = encodeURIComponent(message);
-            window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+            let phoneNumber = "9152555586"; 
+let upiID = "your-upi-id@paytm"; // यहाँ अपनी असली UPI ID डाल देना
+let storeName = "The Pizza Hub";
+
+let paymentUrl = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(storeName)}&am=${total}&cu=INR`;
+
+window.location.href = paymentUrl;
+
+setTimeout(function() {
+    let encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+}, 3000);
         }
     </script>
 </body>
