@@ -313,6 +313,20 @@
     <div class="container">
         <h2 class="section-title">पॉपुलर पिज़्ज़ा</h2>
         <div class="menu-grid">
+            <!-- 1. ट्रायल कॉफी (Trial Coffee) - पिज़्ज़ा सेक्शन में -->
+            <div class="card" style="border: 2px dashed var(--trial);">
+                <div>
+                    <h3 style="color: var(--trial);">Trial Coffee (ट्रायल कॉफी) ☕</h3>
+                    <p>मुफ्त ट्रायल के लिए स्पेशल कॉफी टेस्ट करें!</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price-trial">₹0 (Free)</span>
+                    <div id="cart-ctrl-Trial Coffee">
+                        <button class="btn-add-trial" onclick="addToCart('Trial Coffee', 0)">Add +</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <div>
                     <h3>Margherita Pizza</h3>
@@ -506,6 +520,7 @@
             let totalPrice = 0;
 
             const menuNames = [
+                'Trial Coffee',
                 'Free Trial Water',
                 'Water Bottle',
                 'Margherita Pizza', 
@@ -518,7 +533,7 @@
             menuNames.forEach(name => {
                 let ctrlDiv = document.getElementById(`cart-ctrl-${name}`);
                 if (ctrlDiv) {
-                    if (name === 'Free Trial Water') {
+                    if (name === 'Trial Coffee' || name === 'Free Trial Water') {
                         ctrlDiv.innerHTML = `<button class="btn-add-trial" onclick="addToCart('${name}', 0)">Add +</button>`;
                     } else if (name === 'Water Bottle') {
                         ctrlDiv.innerHTML = `<button class="btn-add-water" onclick="addToCart('${name}', 20)">Add +</button>`;
@@ -552,6 +567,7 @@
 
         function getItemPrice(name) {
             const prices = {
+                'Trial Coffee': 0,
                 'Free Trial Water': 0,
                 'Water Bottle': 20,
                 'Margherita Pizza': 129,
