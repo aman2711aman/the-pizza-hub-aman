@@ -365,16 +365,16 @@
                 </div>
             </div>
 
-            <!-- 2. ठीक इसके बाद फ्री ट्रायल आइटम (Free Trial Item) -->
+            <!-- 2. फ्री ट्रायल वाटर (Free Trial Water) -->
             <div class="card" style="border: 2px dashed var(--trial);">
                 <div>
-                    <h3 style="color: var(--trial);">Free Trial Item (फ्री ट्रायल) 🎁</h3>
-                    <p>बिना किसी शुल्क के हमारे पिज़्ज़ा का स्वाद टेस्ट करें!</p>
+                    <h3 style="color: var(--trial);">Free Trial Water (फ्री ट्रायल) 💧</h3>
+                    <p>बिना किसी शुल्क के फ्री ट्रायल आइटम टेस्ट करें!</p>
                 </div>
                 <div class="card-footer">
                     <span class="price-trial">₹0 (Free)</span>
-                    <div id="cart-ctrl-Free Trial Item">
-                        <button class="btn-add-trial" onclick="addToCart('Free Trial Item', 0)">Add +</button>
+                    <div id="cart-ctrl-Free Trial Water">
+                        <button class="btn-add-trial" onclick="addToCart('Free Trial Water', 0)">Add +</button>
                     </div>
                 </div>
             </div>
@@ -470,7 +470,7 @@
             let totalPrice = 0;
 
             const menuNames = [
-                'Free Trial Item',
+                'Free Trial Water',
                 'Margherita Pizza', 
                 'Farmhouse Delight', 
                 'Paneer Tikka Special', 
@@ -481,7 +481,7 @@
             menuNames.forEach(name => {
                 let ctrlDiv = document.getElementById(`cart-ctrl-${name}`);
                 if (ctrlDiv) {
-                    if (name === 'Free Trial Item') {
+                    if (name === 'Free Trial Water') {
                         ctrlDiv.innerHTML = `<button class="btn-add-trial" onclick="addToCart('${name}', 0)">Add +</button>`;
                     } else {
                         ctrlDiv.innerHTML = `<button class="btn-add" onclick="addToCart('${name}', ${getItemPrice(name)})">Add +</button>`;
@@ -513,7 +513,7 @@
 
         function getItemPrice(name) {
             const prices = {
-                'Free Trial Item': 0,
+                'Free Trial Water': 0,
                 'Margherita Pizza': 129,
                 'Farmhouse Delight': 179,
                 'Paneer Tikka Special': 219,
