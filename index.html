@@ -106,23 +106,6 @@
             font-weight: bold;
         }
 
-        .qr-section {
-            background: white;
-            text-align: center;
-            padding: 20px;
-            margin-top: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-        }
-
-        .qr-section img {
-            width: 160px;
-            height: 160px;
-            margin-top: 10px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-        }
-
         .cart-bar {
             position: fixed;
             bottom: 0;
@@ -147,6 +130,60 @@
             font-weight: bold;
             cursor: pointer;
             text-decoration: none;
+        }
+
+        /* QR कोड पॉप-अप (Modal) स्टाइलिंग */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 200;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 350px;
+            width: 90%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .qr-amount {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .btn-confirm-wa {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -229,23 +266,34 @@
                 </div>
             </div>
         </div>
-
-        <div class="qr-section">
-            <h3 style="color: #1d3557; font-size: 1.1rem;">स्कैन करके डायरेक्ट पेमेंट करें</h3>
-            <p style="font-size: 0.85rem; color: #666; margin-top: 4px;">UPI ID: guptakamlesh44@bpunity</p>
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=guptakamlesh44@bpunity&pn=The%20Pizza%20Hub" alt="The Pizza Hub UPI QR Code">
-        </div>
     </div>
 
+    <!-- कार्ट बार -->
     <div class="cart-bar">
         <div>
             <span id="cart-count">0 आइटम्स</span> | <b>कुल: ₹<span id="cart-total">0</span></b>
         </div>
-        <button class="btn-checkout" onclick="sendWhatsAppOrder()">WhatsApp पर ऑर्डर करें 📲</button>
+        <button class="btn-checkout" onclick="openPaymentModal()">WhatsApp पर ऑर्डर करें 📲</button>
+    </div>
+
+    <!-- डायनेमिक QR कोड का पॉप-अप स्क्रीन -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closePaymentModal()">&times;</span>
+            <h3 style="color: #1d3557;">पेमेंट करें (Scan & Pay)</h3>
+            <div class="qr-amount" id="qr-amount-text">कुल भुगतान: ₹0</div>
+            <p style="font-size: 0.8rem; color: #666;">गूगल पे, फोनपे या पेटीएम से स्कैन करें</p>
+            
+            <img id="dynamic-qr" src="" alt="Payment QR Code" style="width: 180px; height: 180px; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px;">
+
+            <button class="btn-confirm-wa" onclick="sendWhatsAppOrder()">पेमेंट कर दिया? WhatsApp पर आर्डर भेजें 📲</button>
+        </div>
     </div>
 
     <script>
         let cart = [];
+        let globalTotal = 0;
+        let globalMessage = "";
 
         function addToCart(name, price) {
             const itemIndex = cart.findIndex(item => item.name === name);
@@ -266,40 +314,47 @@
                 totalPrice += item.price * item.qty;
             });
 
+            globalTotal = totalPrice;
             document.getElementById('cart-count').innerText = `${totalItems} आइटम्स`;
             document.getElementById('cart-total').innerText = totalPrice;
         }
 
-        function sendWhatsAppOrder() {
+        function openPaymentModal() {
             if (cart.length === 0) {
                 alert('कृपया ऑर्डर करने से पहले कम से कम एक आइटम चुनें!');
                 return;
             }
 
-            let message = "नमस्ते The Pizza Hub! मुझे यह ऑर्डर देना है:\n\nनमस्ते, यह बना के डिलीवर करना है:\n";
-            let total = 0;
-
+            // मैसेज तैयार करना
+            globalMessage = "नमस्ते The Pizza Hub! मुझे यह ऑर्डर देना है:\n\nनमस्ते, यह बना के डिलीवर करना है:\n";
             cart.forEach((item, index) => {
                 let itemTotal = item.price * item.qty;
-                total += itemTotal;
-                message += `${index + 1}. ${item.name} x ${item.qty} = ₹${itemTotal}\n`;
+                globalMessage += `${index + 1}. ${item.name} x ${item.qty} = ₹${itemTotal}\n`;
             });
+            globalMessage += `\n*कुल राशि: ₹${globalTotal}*`;
+            globalMessage += `\n\nकृपया डिलीवरी का समय और भुगतान माध्यम की पुष्टि करें।`;
 
-            message += `\n*कुल राशि: ₹${total}*`;
-            message += `\n\nकृपया डिलीवरी का समय और भुगतान माध्यम की पुष्टि करें।`;
-
-            let phoneNumber = "9152555586"; 
-            let upiID = "guptakamlesh44@bpunity"; 
+            // डायनेमिक QR कोड तैयार करना (अमाउंट फ़िक्स करके)
+            let upiID = "guptakamlesh44@bpunity";
             let storeName = "The Pizza Hub";
+            let upiUrl = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(storeName)}&am=${globalTotal}&cu=INR`;
+            
+            document.getElementById('qr-amount-text').innerText = `कुल भुगतान: ₹${globalTotal}`;
+            document.getElementById('dynamic-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiUrl)}`;
 
-            let paymentUrl = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(storeName)}&am=${total}&cu=INR`;
+            // पॉप-अप दिखाएं
+            document.getElementById('paymentModal').style.display = "flex";
+        }
 
-            window.location.href = paymentUrl;
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = "none";
+        }
 
-            setTimeout(function() {
-                let encodedMessage = encodeURIComponent(message);
-                window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
-            }, 3000);
+        function sendWhatsAppOrder() {
+            let phoneNumber = "9152555586"; 
+            let encodedMessage = encodeURIComponent(globalMessage);
+            window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+            closePaymentModal();
         }
     </script>
 </body>
