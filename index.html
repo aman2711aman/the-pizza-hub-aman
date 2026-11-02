@@ -311,7 +311,7 @@
     </header>
 
     <div class="container">
-        <!-- 1. सबसे ऊपर कॉफ़ी और वाटर (Coffee & Water) सेक्शन -->
+        <!-- 1. सबसे ऊपर कॉफ़ी, पानी और ट्रायल सेक्शन -->
         <h2 class="section-title" style="border-left-color: var(--water);">☕ बेवरेज एवं ड्रिंक्स (Coffee & Water)</h2>
         <div class="menu-grid">
             <div class="card">
@@ -378,6 +378,20 @@
                     </div>
                 </div>
             </div>
+
+            <!-- नया फ्री ट्रायल आइटम -->
+            <div class="card" style="border: 2px dashed var(--trial);">
+                <div>
+                    <h3 style="color: var(--trial);">Trial Bite / Snack (फ्री ट्रायल स्नैक) 🍕</h3>
+                    <p>मुफ्त ट्रायल के लिए मिनी स्नैक/सैम्पल!</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price-trial">₹0 (Free)</span>
+                    <div id="cart-ctrl-Trial Bite / Snack">
+                        <button class="btn-add-trial" onclick="addToCart('Trial Bite / Snack', 0)">Add +</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- 2. पॉपुलर पिज़्ज़ा सेक्शन -->
@@ -386,7 +400,7 @@
             <div class="card">
                 <div>
                     <h3>Margherita Pizza</h3>
-                    <p>क्लासिक चीज़, स्पेशल टोमैटो सॉस और हर्ब्स</p>
+                    <p>क्लासिक चीज़, स्पेशल टोमैटो सॉस और हर्ब्स</p>
                 </div>
                 <div class="card-footer">
                     <span class="price">₹129</span>
@@ -552,6 +566,7 @@
                 'Trial Coffee',
                 'Water Bottle',
                 'Free Trial Water',
+                'Trial Bite / Snack',
                 'Margherita Pizza', 
                 'Farmhouse Delight', 
                 'Paneer Tikka Special', 
@@ -562,12 +577,10 @@
             menuNames.forEach(name => {
                 let ctrlDiv = document.getElementById(`cart-ctrl-${name}`);
                 if (ctrlDiv) {
-                    if (name === 'Trial Coffee' || name === 'Free Trial Water') {
+                    if (name === 'Trial Coffee' || name === 'Free Trial Water' || name === 'Trial Bite / Snack') {
                         ctrlDiv.innerHTML = `<button class="btn-add-trial" onclick="addToCart('${name}', 0)">Add +</button>`;
                     } else if (name === 'Water Bottle') {
                         ctrlDiv.innerHTML = `<button class="btn-add-water" onclick="addToCart('${name}', 20)">Add +</button>`;
-                    } else if (name === 'Hot Coffee' || name === 'Cold Coffee') {
-                        ctrlDiv.innerHTML = `<button class="btn-add" onclick="addToCart('${name}', ${getItemPrice(name)})">Add +</button>`;
                     } else {
                         ctrlDiv.innerHTML = `<button class="btn-add" onclick="addToCart('${name}', ${getItemPrice(name)})">Add +</button>`;
                     }
@@ -603,6 +616,7 @@
                 'Trial Coffee': 0,
                 'Water Bottle': 20,
                 'Free Trial Water': 0,
+                'Trial Bite / Snack': 0,
                 'Margherita Pizza': 129,
                 'Farmhouse Delight': 179,
                 'Paneer Tikka Special': 219,
