@@ -106,7 +106,6 @@
             font-weight: bold;
         }
 
-        /* कस्टमाइज्ड QR कोड सेक्शन */
         .qr-section {
             background: white;
             text-align: center;
@@ -164,4 +163,144 @@
             <div class="card">
                 <div>
                     <h3>Margherita Pizza</h3>
-                    <p>क्
+                    <p>क्लासिक चीज़, स्पेशल टोमैटो सॉस और हर्ब्स</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price">₹129</span>
+                    <button class="btn-add" onclick="addToCart('Margherita Pizza', 129)">Add +</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <h3>Farmhouse Delight</h3>
+                    <p>शिमला मिर्च, प्याज, टमाटर और ताज़ा स्वीट कॉर्न</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price">₹179</span>
+                    <button class="btn-add" onclick="addToCart('Farmhouse Delight', 179)">Add +</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <h3>Paneer Tikka Special</h3>
+                    <p>मसालेदार पनीर टिक्का, शिमला मिर्च और रेड पैपर</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price">₹219</span>
+                    <button class="btn-add" onclick="addToCart('Paneer Tikka Special', 219)">Add +</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <h3>Peri Peri Veggie Pizza</h3>
+                    <p>पैरी-पैरी मसाले, jalapenos और स्पाइसी वेजिस</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price">₹239</span>
+                    <button class="btn-add" onclick="addToCart('Peri Peri Veggie Pizza', 239)">Add +</button>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">स्नैक्स एवं नूडल्स</h2>
+        <div class="menu-grid">
+            <div class="card">
+                <div>
+                    <h3>Cheese Garlic Bread</h3>
+                    <p>गार्लिक बटर और लोडेड मोज़रेला चीज़</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price">₹2</span>
+                    <button class="btn-add" onclick="addToCart('Cheese Garlic Bread', 2)">Add +</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <h3>Schezwan Fusion Noodles</h3>
+                    <p>स्पाइसी शेजवान सॉस और मिक्स वेजीज</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price">₹119</span>
+                    <button class="btn-add" onclick="addToCart('Schezwan Fusion Noodles', 119)">Add +</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="qr-section">
+            <h3 style="color: #1d3557; font-size: 1.1rem;">स्कैन करके डायरेक्ट पेमेंट करें</h3>
+            <p style="font-size: 0.85rem; color: #666; margin-top: 4px;">UPI ID: xaman27112001-1@oksbi</p>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=xaman27112001-1@oksbi&pn=The%20Pizza%20Hub" alt="The Pizza Hub UPI QR Code">
+        </div>
+    </div>
+
+    <div class="cart-bar">
+        <div>
+            <span id="cart-count">0 आइटम्स</span> | <b>कुल: ₹<span id="cart-total">0</span></b>
+        </div>
+        <button class="btn-checkout" onclick="sendWhatsAppOrder()">WhatsApp पर ऑर्डर करें 📲</button>
+    </div>
+
+    <script>
+        let cart = [];
+
+        function addToCart(name, price) {
+            const itemIndex = cart.findIndex(item => item.name === name);
+            if (itemIndex > -1) {
+                cart[itemIndex].qty += 1;
+            } else {
+                cart.push({ name: name, price: price, qty: 1 });
+            }
+            updateCart();
+        }
+
+        function updateCart() {
+            let totalItems = 0;
+            let totalPrice = 0;
+
+            cart.forEach(item => {
+                totalItems += item.qty;
+                totalPrice += item.price * item.qty;
+            });
+
+            document.getElementById('cart-count').innerText = `${totalItems} आइटम्स`;
+            document.getElementById('cart-total').innerText = totalPrice;
+        }
+
+        function sendWhatsAppOrder() {
+            if (cart.length === 0) {
+                alert('कृपया ऑर्डर करने से पहले कम से कम एक आइटम चुनें!');
+                return;
+            }
+
+            let message = "नमस्ते The Pizza Hub! मुझे यह ऑर्डर देना है:\n\nनमस्ते, यह बना के डिलीवर करना है:\n";
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                let itemTotal = item.price * item.qty;
+                total += itemTotal;
+                message += `${index + 1}. ${item.name} x ${item.qty} = ₹${itemTotal}\n`;
+            });
+
+            message += `\n*कुल राशि: ₹${total}*`;
+            message += `\n\nकृपया डिलीवरी का समय और भुगतान माध्यम की पुष्टि करें।`;
+
+            let phoneNumber = "9152555586"; 
+            let upiID = "xaman27112001-1@oksbi"; 
+            let storeName = "The Pizza Hub";
+
+            let paymentUrl = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(storeName)}&am=${total}&cu=INR`;
+
+            window.location.href = paymentUrl;
+
+            setTimeout(function() {
+                let encodedMessage = encodeURIComponent(message);
+                window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
