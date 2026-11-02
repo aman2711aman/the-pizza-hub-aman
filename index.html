@@ -289,23 +289,6 @@
     </header>
 
     <div class="container">
-        <!-- स्पेशल फ्री ट्रायल मेनू कार्ड -->
-        <h2 class="section-title" style="border-left-color: var(--trial);">🎁 स्पेशल फ्री ट्रायल</h2>
-        <div class="menu-grid">
-            <div class="card" style="border: 2px dashed var(--trial);">
-                <div>
-                    <h3 style="color: var(--trial);">Free Trial Item (फ्री ट्रायल)</h3>
-                    <p>बिना किसी शुल्क के हमारे पिज़्ज़ा का स्वाद टेस्ट करें!</p>
-                </div>
-                <div class="card-footer">
-                    <span class="price-trial">₹0 (Free)</span>
-                    <div id="cart-ctrl-Free Trial">
-                        <button class="btn-add-trial" onclick="addToCart('Free Trial Item', 0)">Add +</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <h2 class="section-title">पॉपुलर पिज़्ज़ा</h2>
         <div class="menu-grid">
             <div class="card">
@@ -363,6 +346,7 @@
 
         <h2 class="section-title">स्नैक्स एवं नूडल्स</h2>
         <div class="menu-grid">
+            <!-- 1. चीज़ गार्लिक ब्रेड -->
             <div class="card">
                 <div>
                     <h3>Cheese Garlic Bread (₹2 / ₹99)</h3>
@@ -381,6 +365,21 @@
                 </div>
             </div>
 
+            <!-- 2. ठीक इसके बाद फ्री ट्रायल आइटम (Free Trial Item) -->
+            <div class="card" style="border: 2px dashed var(--trial);">
+                <div>
+                    <h3 style="color: var(--trial);">Free Trial Item (फ्री ट्रायल) 🎁</h3>
+                    <p>बिना किसी शुल्क के हमारे पिज़्ज़ा का स्वाद टेस्ट करें!</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price-trial">₹0 (Free)</span>
+                    <div id="cart-ctrl-Free Trial Item">
+                        <button class="btn-add-trial" onclick="addToCart('Free Trial Item', 0)">Add +</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. शेजवान नूडल्स -->
             <div class="card">
                 <div>
                     <h3>Schezwan Fusion Noodles</h3>
