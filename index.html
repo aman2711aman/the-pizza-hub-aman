@@ -11,6 +11,7 @@
             --dark: #2f3542;
             --light: #f1f2f6;
             --accent: #2ed573;
+            --trial: #3742fa;
         }
 
         * {
@@ -163,26 +164,51 @@
             right: 0;
             background: var(--dark);
             color: white;
-            padding: 15px 25px;
+            padding: 12px 20px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 8px;
             box-shadow: 0 -4px 15px rgba(0,0,0,0.25);
             z-index: 100;
             border-top-left-radius: 15px;
             border-top-right-radius: 15px;
         }
 
+        .cart-bar-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-actions {
+            display: flex;
+            gap: 10px;
+        }
+
         .btn-checkout {
             background: var(--accent);
             color: white;
             border: none;
-            padding: 10px 18px;
+            padding: 8px 14px;
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.95rem;
             box-shadow: 0 4px 10px rgba(46, 213, 115, 0.3);
+            flex: 1;
+        }
+
+        .btn-trial {
+            background: var(--trial);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(55, 66, 250, 0.3);
+            flex: 1;
         }
 
         /* एड्रेस फॉर्म पॉप-अप (Modal) स्टाइलिंग */
@@ -354,17 +380,20 @@
 
     <!-- कार्ट बार -->
     <div class="cart-bar">
-        <div>
+        <div class="cart-bar-top">
             <span id="cart-count">0 आइटम्स</span> | <b>कुल: ₹<span id="cart-total">0</span></b>
         </div>
-        <button class="btn-checkout" onclick="openAddressModal()">WhatsApp पर ऑर्डर करें 📲</button>
+        <div class="cart-actions">
+            <button class="btn-checkout" onclick="openAddressModal('paid')">WhatsApp ऑर्डर (पेमेंट) 📲</button>
+            <button class="btn-trial" onclick="openAddressModal('trial')">फ्री ट्रायल (₹0) 🎁</button>
+        </div>
     </div>
 
     <!-- एड्रेस लेने के लिए पॉप-अप फॉर्म -->
     <div id="addressModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeAddressModal()">&times;</span>
-            <h3 style="color: var(--dark); margin-bottom: 15px; text-align: center;">डिलिवरी की जानकारी भरें</h3>
+            <h3 id="modal-title" style="color: var(--dark); margin-bottom: 15px; text-align: center;">डिलिवरी की जानकारी भरें</h3>
             
             <div class="form-group">
                 <label>आपका नाम:</label>
@@ -381,12 +410,13 @@
                 <textarea id="custAddress" rows="3" placeholder="कमरा नंबर, बिल्डिंग का नाम, एरिया..."></textarea>
             </div>
 
-            <button class="btn-submit-order" onclick="proceedToPayment()">पेमेंट और आर्डर भेजें 🚀</button>
+            <button id="modal-submit-btn" class="btn-submit-order" onclick="submitOrder()">पेमेंट और आर्डर भेजें 🚀</button>
         </div>
     </div>
 
     <script>
         let cart = [];
+        let orderType = 'paid'; // 'paid' या 'trial'
 
         function addToCart(name, price) {
             const itemIndex = cart.findIndex(item => item.name === name);
@@ -474,11 +504,25 @@
             return prices[name] || 0;
         }
 
-        function openAddressModal() {
+        function openAddressModal(type) {
             if (cart.length === 0) {
                 alert('कृपया ऑर्डर करने से पहले कम से कम एक आइटम चुनें!');
                 return;
             }
+            orderType = type;
+            let titleText = document.getElementById('modal-title');
+            let submitBtn = document.getElementById('modal-submit-btn');
+
+            if (orderType === 'trial') {
+                titleText.innerText = "फ्री ट्रायल (Free Trial) की जानकारी";
+                submitBtn.innerText = "फ्री ट्रायल आर्डर भेजें 🎁";
+                submitBtn.style.background = "var(--trial)";
+            } else {
+                titleText.innerText = "डिलिवरी की जानकारी भरें";
+                submitBtn.innerText = "पेमेंट और आर्डर भेजें 🚀";
+                submitBtn.style.background = "var(--accent)";
+            }
+
             document.getElementById('addressModal').style.display = "flex";
         }
 
@@ -486,7 +530,7 @@
             document.getElementById('addressModal').style.display = "none";
         }
 
-        function proceedToPayment() {
+        function submitOrder() {
             let name = document.getElementById('custName').value.trim();
             let phone = document.getElementById('custPhone').value.trim();
             let address = document.getElementById('custAddress').value.trim();
@@ -496,34 +540,54 @@
                 return;
             }
 
-            let message = `नमस्ते The Pizza Hub! मुझे यह ऑर्डर देना है:\n\n`;
+            let message = "";
+            let total = 0;
+
+            cart.forEach((item) => {
+                total += item.price * item.qty;
+            });
+
+            if (orderType === 'trial') {
+                message = `🎁 *नया फ्री ट्रायल (Free Trial) ऑर्डर आया है!*\n\n`;
+            } else {
+                message = `नमस्ते The Pizza Hub! मुझे यह ऑर्डर देना है:\n\n`;
+            }
+
             message += `👤 ग्राहक का नाम: ${name}\n`;
             message += `📞 मोबाइल नंबर: ${phone}\n`;
             message += `📍 डिलीवरी पता: ${address}\n\n`;
             message += `📦 *ऑर्डर आइटम्स:*\n`;
             
-            let total = 0;
             cart.forEach((item, index) => {
                 let itemTotal = item.price * item.qty;
-                total += itemTotal;
                 message += `${index + 1}. ${item.name} x ${item.qty} = ₹${itemTotal}\n`;
             });
 
-            message += `\n*कुल राशि: ₹${total}*`;
-            message += `\n\nपेमेंट होने के बाद यह ऑर्डर डिलीवर करना है।`;
+            if (orderType === 'trial') {
+                message += `\n*कुल राशि: ₹0 (फ्री ट्रायल)*`;
+                message += `\n\nकृपया यह फ्री ट्रायल आर्डर डिलीवर करें।`;
+            } else {
+                message += `\n*कुल राशि: ₹${total}*`;
+                message += `\n\nपेमेंट होने के बाद यह ऑर्डर डिलीवर करना है।`;
+            }
 
             let storePhone = "9152555586"; 
             let upiID = "guptakamlesh44@bpunity"; 
             let storeName = "The Pizza Hub";
 
-            let paymentUrl = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(storeName)}&am=${total}&cu=INR`;
+            if (orderType === 'paid') {
+                let paymentUrl = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(storeName)}&am=${total}&cu=INR`;
+                window.location.href = paymentUrl;
 
-            window.location.href = paymentUrl;
-
-            setTimeout(function() {
+                setTimeout(function() {
+                    let encodedMessage = encodeURIComponent(message);
+                    window.open(`https://wa.me/${storePhone}?text=${encodedMessage}`, '_blank');
+                }, 3000);
+            } else {
+                // फ्री ट्रायल के लिए सीधे WhatsApp खुलेगा बिना पेमेंट के
                 let encodedMessage = encodeURIComponent(message);
                 window.open(`https://wa.me/${storePhone}?text=${encodedMessage}`, '_blank');
-            }, 3000);
+            }
 
             closeAddressModal();
         }
