@@ -24,7 +24,7 @@
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             color: #333;
-            padding-bottom: 110px;
+            padding-bottom: 90px;
             min-height: 100vh;
         }
 
@@ -111,6 +111,12 @@
             font-size: 1.2rem;
         }
 
+        .price-trial {
+            font-weight: bold;
+            color: var(--trial);
+            font-size: 1.2rem;
+        }
+
         .btn-add {
             background: var(--secondary);
             color: var(--dark);
@@ -124,6 +130,21 @@
 
         .btn-add:hover {
             background: #e09f02;
+        }
+
+        .btn-add-trial {
+            background: var(--trial);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .btn-add-trial:hover {
+            background: #2e34d2;
         }
 
         .qty-control {
@@ -157,7 +178,7 @@
             text-align: center;
         }
 
-        /* फिक्सड बॉटम कार्ट बार */
+        /* कार्ट बार */
         .cart-bar {
             position: fixed;
             bottom: 0;
@@ -165,56 +186,30 @@
             right: 0;
             background: var(--dark);
             color: white;
-            padding: 12px 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
-            z-index: 100;
-            border-top-left-radius: 18px;
-            border-top-right-radius: 18px;
-        }
-
-        .cart-bar-top {
+            padding: 15px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
-            padding-bottom: 6px;
-        }
-
-        .cart-actions {
-            display: flex;
-            gap: 10px;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.25);
+            z-index: 100;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
         }
 
         .btn-checkout {
             background: var(--accent);
             color: white;
             border: none;
-            padding: 10px 12px;
+            padding: 10px 18px;
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 0.9rem;
-            flex: 1;
-            box-shadow: 0 3px 8px rgba(46, 213, 115, 0.4);
-            text-align: center;
+            font-size: 1rem;
+            box-shadow: 0 4px 10px rgba(46, 213, 115, 0.3);
         }
 
-        .btn-trial {
-            background: var(--trial);
-            color: white;
-            border: none;
-            padding: 10px 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.9rem;
-            flex: 1;
-            box-shadow: 0 3px 8px rgba(55, 66, 250, 0.4);
-            text-align: center;
+        .btn-checkout:hover {
+            background: #26af5f;
         }
 
         /* एड्रेस फॉर्म पॉप-अप (Modal) स्टाइलिंग */
@@ -294,6 +289,23 @@
     </header>
 
     <div class="container">
+        <!-- स्पेशल फ्री ट्रायल मेनू कार्ड -->
+        <h2 class="section-title" style="border-left-color: var(--trial);">🎁 स्पेशल फ्री ट्रायल</h2>
+        <div class="menu-grid">
+            <div class="card" style="border: 2px dashed var(--trial);">
+                <div>
+                    <h3 style="color: var(--trial);">Free Trial Item (फ्री ट्रायल)</h3>
+                    <p>बिना किसी शुल्क के हमारे पिज़्ज़ा का स्वाद टेस्ट करें!</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price-trial">₹0 (Free)</span>
+                    <div id="cart-ctrl-Free Trial">
+                        <button class="btn-add-trial" onclick="addToCart('Free Trial Item', 0)">Add +</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <h2 class="section-title">पॉपुलर पिज़्ज़ा</h2>
         <div class="menu-grid">
             <div class="card">
@@ -384,23 +396,19 @@
         </div>
     </div>
 
-    <!-- कार्ट बार जिसमें दोनों बटन साफ़ दिखेंगे -->
+    <!-- कार्ट बार -->
     <div class="cart-bar">
-        <div class="cart-bar-top">
-            <span id="cart-count">0 आइटम्स</span> 
-            <b>कुल: ₹<span id="cart-total">0</span></b>
+        <div>
+            <span id="cart-count">0 आइटम्स</span> | <b>कुल: ₹<span id="cart-total">0</span></b>
         </div>
-        <div class="cart-actions">
-            <button class="btn-checkout" onclick="openAddressModal('paid')">WhatsApp (पेमेंट) 📲</button>
-            <button class="btn-trial" onclick="openAddressModal('trial')">फ्री ट्रायल (₹0) 🎁</button>
-        </div>
+        <button class="btn-checkout" onclick="openAddressModal()">WhatsApp पर ऑर्डर करें 📲</button>
     </div>
 
     <!-- एड्रेस लेने के लिए पॉप-अप फॉर्म -->
     <div id="addressModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeAddressModal()">&times;</span>
-            <h3 id="modal-title" style="color: var(--dark); margin-bottom: 15px; text-align: center;">डिलिवरी की जानकारी भरें</h3>
+            <h3 style="color: var(--dark); margin-bottom: 15px; text-align: center;">डिलिवरी की जानकारी भरें</h3>
             
             <div class="form-group">
                 <label>आपका नाम:</label>
@@ -417,13 +425,12 @@
                 <textarea id="custAddress" rows="3" placeholder="कमरा नंबर, बिल्डिंग का नाम, एरिया..."></textarea>
             </div>
 
-            <button id="modal-submit-btn" class="btn-submit-order" onclick="submitOrder()">पेमेंट और आर्डर भेजें 🚀</button>
+            <button class="btn-submit-order" onclick="submitOrder()">ऑर्डर भेजें 🚀</button>
         </div>
     </div>
 
     <script>
         let cart = [];
-        let orderType = 'paid';
 
         function addToCart(name, price) {
             const itemIndex = cart.findIndex(item => item.name === name);
@@ -464,6 +471,7 @@
             let totalPrice = 0;
 
             const menuNames = [
+                'Free Trial Item',
                 'Margherita Pizza', 
                 'Farmhouse Delight', 
                 'Paneer Tikka Special', 
@@ -474,7 +482,11 @@
             menuNames.forEach(name => {
                 let ctrlDiv = document.getElementById(`cart-ctrl-${name}`);
                 if (ctrlDiv) {
-                    ctrlDiv.innerHTML = `<button class="btn-add" onclick="addToCart('${name}', ${getItemPrice(name)})">Add +</button>`;
+                    if (name === 'Free Trial Item') {
+                        ctrlDiv.innerHTML = `<button class="btn-add-trial" onclick="addToCart('${name}', 0)">Add +</button>`;
+                    } else {
+                        ctrlDiv.innerHTML = `<button class="btn-add" onclick="addToCart('${name}', ${getItemPrice(name)})">Add +</button>`;
+                    }
                 }
             });
 
@@ -502,6 +514,7 @@
 
         function getItemPrice(name) {
             const prices = {
+                'Free Trial Item': 0,
                 'Margherita Pizza': 129,
                 'Farmhouse Delight': 179,
                 'Paneer Tikka Special': 219,
@@ -511,25 +524,11 @@
             return prices[name] || 0;
         }
 
-        function openAddressModal(type) {
+        function openAddressModal() {
             if (cart.length === 0) {
                 alert('कृपया ऑर्डर करने से पहले कम से कम एक आइटम चुनें!');
                 return;
             }
-            orderType = type;
-            let titleText = document.getElementById('modal-title');
-            let submitBtn = document.getElementById('modal-submit-btn');
-
-            if (orderType === 'trial') {
-                titleText.innerText = "फ्री ट्रायल (Free Trial) की जानकारी";
-                submitBtn.innerText = "फ्री ट्रायल आर्डर भेजें 🎁";
-                submitBtn.style.background = "var(--trial)";
-            } else {
-                titleText.innerText = "डिलिवरी की जानकारी भरें";
-                submitBtn.innerText = "पेमेंट और आर्डर भेजें 🚀";
-                submitBtn.style.background = "var(--accent)";
-            }
-
             document.getElementById('addressModal').style.display = "flex";
         }
 
@@ -547,42 +546,33 @@
                 return;
             }
 
-            let message = "";
-            let total = 0;
+            let hasOnlyTrial = cart.every(item => item.price === 0);
 
-            cart.forEach((item) => {
-                total += item.price * item.qty;
-            });
-
-            if (orderType === 'trial') {
-                message = `🎁 *नया फ्री ट्रायल (Free Trial) ऑर्डर आया है!*\n\n`;
-            } else {
-                message = `नमस्ते The Pizza Hub! मुझे यह ऑर्डर देना है:\n\n`;
-            }
-
+            let message = `नमस्ते The Pizza Hub! मुझे यह ऑर्डर देना है:\n\n`;
             message += `👤 ग्राहक का नाम: ${name}\n`;
             message += `📞 मोबाइल नंबर: ${phone}\n`;
             message += `📍 डिलीवरी पता: ${address}\n\n`;
             message += `📦 *ऑर्डर आइटम्स:*\n`;
             
+            let total = 0;
             cart.forEach((item, index) => {
                 let itemTotal = item.price * item.qty;
+                total += itemTotal;
                 message += `${index + 1}. ${item.name} x ${item.qty} = ₹${itemTotal}\n`;
             });
 
-            if (orderType === 'trial') {
-                message += `\n*कुल राशि: ₹0 (फ्री ट्रायल)*`;
-                message += `\n\nकृपया यह फ्री ट्रायल आर्डर डिलीवर करें।`;
-            } else {
-                message += `\n*कुल राशि: ₹${total}*`;
-                message += `\n\nपेमेंट होने के बाद यह ऑर्डर डिलीवर करना है।`;
-            }
+            message += `\n*कुल राशि: ₹${total}*`;
 
             let storePhone = "9152555586"; 
             let upiID = "guptakamlesh44@bpunity"; 
             let storeName = "The Pizza Hub";
 
-            if (orderType === 'paid') {
+            if (hasOnlyTrial || total === 0) {
+                message += `\n\nयह एक फ्री ट्रायल आर्डर है। कृपया डिलीवर करें।`;
+                let encodedMessage = encodeURIComponent(message);
+                window.open(`https://wa.me/${storePhone}?text=${encodedMessage}`, '_blank');
+            } else {
+                message += `\n\nपेमेंट होने के बाद यह ऑर्डर डिलीवर करना है।`;
                 let paymentUrl = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(storeName)}&am=${total}&cu=INR`;
                 window.location.href = paymentUrl;
 
@@ -590,9 +580,6 @@
                     let encodedMessage = encodeURIComponent(message);
                     window.open(`https://wa.me/${storePhone}?text=${encodedMessage}`, '_blank');
                 }, 3000);
-            } else {
-                let encodedMessage = encodeURIComponent(message);
-                window.open(`https://wa.me/${storePhone}?text=${encodedMessage}`, '_blank');
             }
 
             closeAddressModal();
