@@ -311,9 +311,35 @@
     </header>
 
     <div class="container">
-        <!-- 1. सबसे ऊपर कॉफ़ी, पानी और ट्रायल सेक्शन -->
+        <!-- 1. सबसे ऊपर कॉफ़ी, पानी और फ्री ट्रायल सेक्शन -->
         <h2 class="section-title" style="border-left-color: var(--water);">☕ बेवरेज एवं ड्रिंक्स (Coffee & Water)</h2>
         <div class="menu-grid">
+            <div class="card" style="border: 2px dashed var(--trial);">
+                <div>
+                    <h3 style="color: var(--trial);">Trial Coffee (फ्री ट्रायल कॉफ़ी) ☕</h3>
+                    <p>मुफ्त ट्रायल के लिए कॉफ़ी टेस्ट करें!</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price-trial">₹0 (Free)</span>
+                    <div id="cart-ctrl-Trial Coffee">
+                        <button class="btn-add-trial" onclick="addToCart('Trial Coffee', 0)">Add +</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="border: 2px dashed var(--trial);">
+                <div>
+                    <h3 style="color: var(--trial);">Free Trial Water (फ्री ट्रायल पानी) 💧</h3>
+                    <p>मुफ्त ट्रायल के लिए पानी का सैंपल!</p>
+                </div>
+                <div class="card-footer">
+                    <span class="price-trial">₹0 (Free)</span>
+                    <div id="cart-ctrl-Free Trial Water">
+                        <button class="btn-add-trial" onclick="addToCart('Free Trial Water', 0)">Add +</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <div>
                     <h3>Hot Coffee (हॉट कॉफ़ी) ☕</h3>
@@ -340,19 +366,6 @@
                 </div>
             </div>
 
-            <div class="card" style="border: 2px dashed var(--trial);">
-                <div>
-                    <h3 style="color: var(--trial);">Trial Coffee (फ्री ट्रायल कॉफ़ी) ☕</h3>
-                    <p>मुफ्त ट्रायल के लिए कॉफ़ी टेस्ट करें!</p>
-                </div>
-                <div class="card-footer">
-                    <span class="price-trial">₹0 (Free)</span>
-                    <div id="cart-ctrl-Trial Coffee">
-                        <button class="btn-add-trial" onclick="addToCart('Trial Coffee', 0)">Add +</button>
-                    </div>
-                </div>
-            </div>
-
             <div class="card">
                 <div>
                     <h3>Water Bottle (पानी की बोतल) 🚰</h3>
@@ -365,33 +378,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="card" style="border: 2px dashed var(--trial);">
-                <div>
-                    <h3 style="color: var(--trial);">Free Trial Water (फ्री ट्रायल पानी) 💧</h3>
-                    <p>मुफ्त ट्रायल के लिए पानी का सैंपल!</p>
-                </div>
-                <div class="card-footer">
-                    <span class="price-trial">₹0 (Free)</span>
-                    <div id="cart-ctrl-Free Trial Water">
-                        <button class="btn-add-trial" onclick="addToCart('Free Trial Water', 0)">Add +</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- नया फ्री ट्रायल आइटम -->
-            <div class="card" style="border: 2px dashed var(--trial);">
-                <div>
-                    <h3 style="color: var(--trial);">Trial Bite / Snack (फ्री ट्रायल स्नैक) 🍕</h3>
-                    <p>मुफ्त ट्रायल के लिए मिनी स्नैक/सैम्पल!</p>
-                </div>
-                <div class="card-footer">
-                    <span class="price-trial">₹0 (Free)</span>
-                    <div id="cart-ctrl-Trial Bite / Snack">
-                        <button class="btn-add-trial" onclick="addToCart('Trial Bite / Snack', 0)">Add +</button>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- 2. पॉपुलर पिज़्ज़ा सेक्शन -->
@@ -400,7 +386,7 @@
             <div class="card">
                 <div>
                     <h3>Margherita Pizza</h3>
-                    <p>क्लासिक चीज़, स्पेशल टोमैटो सॉस और हर्ब्स</p>
+                    <p>क्लासिक चीज़, स्पेशल टोमैटो सॉस और हर्ब्स</p>
                 </div>
                 <div class="card-footer">
                     <span class="price">₹129</span>
@@ -561,12 +547,11 @@
             let totalPrice = 0;
 
             const menuNames = [
+                'Trial Coffee',
+                'Free Trial Water',
                 'Hot Coffee',
                 'Cold Coffee',
-                'Trial Coffee',
                 'Water Bottle',
-                'Free Trial Water',
-                'Trial Bite / Snack',
                 'Margherita Pizza', 
                 'Farmhouse Delight', 
                 'Paneer Tikka Special', 
@@ -577,7 +562,7 @@
             menuNames.forEach(name => {
                 let ctrlDiv = document.getElementById(`cart-ctrl-${name}`);
                 if (ctrlDiv) {
-                    if (name === 'Trial Coffee' || name === 'Free Trial Water' || name === 'Trial Bite / Snack') {
+                    if (name === 'Trial Coffee' || name === 'Free Trial Water') {
                         ctrlDiv.innerHTML = `<button class="btn-add-trial" onclick="addToCart('${name}', 0)">Add +</button>`;
                     } else if (name === 'Water Bottle') {
                         ctrlDiv.innerHTML = `<button class="btn-add-water" onclick="addToCart('${name}', 20)">Add +</button>`;
@@ -611,12 +596,11 @@
 
         function getItemPrice(name) {
             const prices = {
+                'Trial Coffee': 0,
+                'Free Trial Water': 0,
                 'Hot Coffee': 40,
                 'Cold Coffee': 70,
-                'Trial Coffee': 0,
                 'Water Bottle': 20,
-                'Free Trial Water': 0,
-                'Trial Bite / Snack': 0,
                 'Margherita Pizza': 129,
                 'Farmhouse Delight': 179,
                 'Paneer Tikka Special': 219,
