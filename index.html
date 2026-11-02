@@ -463,9 +463,9 @@
                     <p>स्पाइसी शेजवान सॉस और मिक्स वेजीज</p>
                 </div>
                 <div class="card-footer">
-                    <span class="price">₹119</span>
+                    <span class="price" style="color: var(--secondary);">उपलब्ध</span>
                     <div id="cart-ctrl-Schezwan Fusion Noodles">
-                        <button class="btn-add" onclick="addToCart('Schezwan Fusion Noodles', 119)">Add +</button>
+                        <button class="btn-add" onclick="addToCart('Schezwan Fusion Noodles', 0)">Add +</button>
                     </div>
                 </div>
             </div>
@@ -566,6 +566,8 @@
                         ctrlDiv.innerHTML = `<button class="btn-add-trial" onclick="addToCart('${name}', 0)">Add +</button>`;
                     } else if (name === 'Water Bottle') {
                         ctrlDiv.innerHTML = `<button class="btn-add-water" onclick="addToCart('${name}', 20)">Add +</button>`;
+                    } else if (name === 'Schezwan Fusion Noodles') {
+                        ctrlDiv.innerHTML = `<button class="btn-add" onclick="addToCart('${name}', 0)">Add +</button>`;
                     } else {
                         ctrlDiv.innerHTML = `<button class="btn-add" onclick="addToCart('${name}', ${getItemPrice(name)})">Add +</button>`;
                     }
@@ -605,7 +607,7 @@
                 'Farmhouse Delight': 179,
                 'Paneer Tikka Special': 219,
                 'Peri Peri Veggie Pizza': 239,
-                'Schezwan Fusion Noodles': 119
+                'Schezwan Fusion Noodles': 0
             };
             return prices[name] || 0;
         }
