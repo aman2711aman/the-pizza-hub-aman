@@ -125,7 +125,6 @@
             background: #e09f02;
         }
 
-        /* क्वांटिटी कण्ट्रोल (Plus / Minus) बटन */
         .qty-control {
             display: flex;
             align-items: center;
@@ -148,10 +147,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .qty-btn:active {
-            transform: scale(0.95);
         }
 
         .item-qty {
@@ -190,8 +185,72 @@
             box-shadow: 0 4px 10px rgba(46, 213, 115, 0.3);
         }
 
-        .btn-checkout:hover {
-            background: #26af5f;
+        /* एड्रेस फॉर्म पॉप-अप (Modal) स्टाइलिंग */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 200;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--dark);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .btn-submit-order {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -260,11 +319,10 @@
 
         <h2 class="section-title">स्नैक्स एवं नूडल्स</h2>
         <div class="menu-grid">
-            <!-- चीज़ गार्लिक ब्रेड (₹2 या ₹99 चुनने का ऑप्शन) -->
             <div class="card">
                 <div>
                     <h3>Cheese Garlic Bread (₹2 / ₹99)</h3>
-                    <p>गार्लिक बटर और लोडेड मोज़रेला चीज़ (अपनी पसंद का अमाउंट चुनें)</p>
+                    <p>गार्लिक बटर और लोडेड मोज़रेला चीज़</p>
                 </div>
                 <div style="margin-top: 8px;">
                     <label style="font-size: 0.85rem; font-weight: bold; color: #555;">अमाउंट चुनें:</label>
@@ -299,7 +357,32 @@
         <div>
             <span id="cart-count">0 आइटम्स</span> | <b>कुल: ₹<span id="cart-total">0</span></b>
         </div>
-        <button class="btn-checkout" onclick="sendWhatsAppOrder()">WhatsApp पर ऑर्डर करें 📲</button>
+        <button class="btn-checkout" onclick="openAddressModal()">WhatsApp पर ऑर्डर करें 📲</button>
+    </div>
+
+    <!-- एड्रेस लेने के लिए पॉप-अप फॉर्म -->
+    <div id="addressModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeAddressModal()">&times;</span>
+            <h3 style="color: var(--dark); margin-bottom: 15px; text-align: center;">डिलिवरी की जानकारी भरें</h3>
+            
+            <div class="form-group">
+                <label>आपका नाम:</label>
+                <input type="text" id="custName" placeholder="अपना नाम लिखें">
+            </div>
+
+            <div class="form-group">
+                <label>मोबाइल नंबर:</label>
+                <input type="tel" id="custPhone" placeholder="10 अंकों का मोबाइल नंबर">
+            </div>
+
+            <div class="form-group">
+                <label>पूरा पता (Address & Landmark):</label>
+                <textarea id="custAddress" rows="3" placeholder="कमरा नंबर, बिल्डिंग का नाम, एरिया..."></textarea>
+            </div>
+
+            <button class="btn-submit-order" onclick="proceedToPayment()">पेमेंट और आर्डर भेजें 🚀</button>
+        </div>
     </div>
 
     <script>
@@ -343,7 +426,6 @@
             let totalItems = 0;
             let totalPrice = 0;
 
-            // सभी आइटम के कंट्रोल रीसेट करें
             const menuNames = [
                 'Margherita Pizza', 
                 'Farmhouse Delight', 
@@ -363,7 +445,6 @@
                 totalItems += item.qty;
                 totalPrice += item.price * item.qty;
 
-                // अगर आइटम मेनू लिस्ट में है तो प्लस/माइनस बटन दिखाएं
                 if (menuNames.includes(item.name)) {
                     let ctrlDiv = document.getElementById(`cart-ctrl-${item.name}`);
                     if (ctrlDiv) {
@@ -393,15 +474,35 @@
             return prices[name] || 0;
         }
 
-        function sendWhatsAppOrder() {
+        function openAddressModal() {
             if (cart.length === 0) {
                 alert('कृपया ऑर्डर करने से पहले कम से कम एक आइटम चुनें!');
                 return;
             }
+            document.getElementById('addressModal').style.display = "flex";
+        }
 
-            let message = "नमस्ते The Pizza Hub! मुझे यह ऑर्डर देना है:\n\nनमस्ते, यह बना के डिलीवर करना है:\n";
+        function closeAddressModal() {
+            document.getElementById('addressModal').style.display = "none";
+        }
+
+        function proceedToPayment() {
+            let name = document.getElementById('custName').value.trim();
+            let phone = document.getElementById('custPhone').value.trim();
+            let address = document.getElementById('custAddress').value.trim();
+
+            if (!name || !phone || !address) {
+                alert('कृपया अपना नाम, मोबाइल नंबर और पूरा पता भरें!');
+                return;
+            }
+
+            let message = `नमस्ते The Pizza Hub! मुझे यह ऑर्डर देना है:\n\n`;
+            message += `👤 ग्राहक का नाम: ${name}\n`;
+            message += `📞 मोबाइल नंबर: ${phone}\n`;
+            message += `📍 डिलीवरी पता: ${address}\n\n`;
+            message += `📦 *ऑर्डर आइटम्स:*\n`;
+            
             let total = 0;
-
             cart.forEach((item, index) => {
                 let itemTotal = item.price * item.qty;
                 total += itemTotal;
@@ -409,9 +510,9 @@
             });
 
             message += `\n*कुल राशि: ₹${total}*`;
-            message += `\n\nकृपया डिलीवरी का समय और भुगतान माध्यम की पुष्टि करें।`;
+            message += `\n\nपेमेंट होने के बाद यह ऑर्डर डिलीवर करना है।`;
 
-            let phoneNumber = "9152555586"; 
+            let storePhone = "9152555586"; 
             let upiID = "guptakamlesh44@bpunity"; 
             let storeName = "The Pizza Hub";
 
@@ -421,8 +522,10 @@
 
             setTimeout(function() {
                 let encodedMessage = encodeURIComponent(message);
-                window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+                window.open(`https://wa.me/${storePhone}?text=${encodedMessage}`, '_blank');
             }, 3000);
+
+            closeAddressModal();
         }
     </script>
 </body>
